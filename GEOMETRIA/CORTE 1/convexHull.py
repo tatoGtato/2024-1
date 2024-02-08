@@ -1,10 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-plt.rcParams["figure.figsize"] = [7.50, 3.50]
-plt.rcParams["figure.autolayout"] = True
-
-
 class Vector:
   def __init__(self, inicial , final):
     self.inicial = inicial
@@ -21,15 +17,29 @@ class Punto:
     def __str__(self):
         return f"x:{self.x} y:{self.y}"
     
+def plot_vecs(cH): 
+    for i in range (len(cH)):
+        plt.plot(cH[i].x, cH[i].y, 'bo', linestyle="--")
+
+    
 def leftmost(points):
     minim = 0
     for i in range(1,len(points)):
-        if points[i].x < points[minim].x:
+        if points[i][0] < points[minim][0]:
             minim = i
-        elif points[i].x == points[minim].x:
-            if points[i].y > points[minim].y:
+        elif points[i][0] == points[minim][0]:
+            if points[i][1] > points[minim][1]:
                 minim = i
     return minim
+
+def det(p1, p2, p3):
+    """ 
+    > 0: CCW turn
+    < 0 CW turn
+    = 0: colinear
+    """
+    return (p2[0] - p1[0]) * (p3[1] - p1[1]) \
+        -(p2[1] - p1[1]) * (p3[0] - p1[0])
 
 def rotation(punto1, punto2):
     ans = punto1.x*punto2.y - punto1.y*punto2.x
@@ -47,52 +57,51 @@ def turn(punto1, punto2, punto3):
     print(rot)
     return rot
 
+points = [(2,1),(1,2),(2,2),(5,4),(3,4),(1,2)]
 
+hull = []
+l = leftmost(points)
+leftMost = points[l]
+currentVertex = leftMost
+hull.append(currentVertex)
+nextVertex = points[1]
+index = 2
+nextIndex = -1
+while True:
+    c0 = currentVertex
+    c1 = nextVertex
 
-def convexHull(p):
-    #Sort the points by x-coordinate
-    p.sort(key=lambda punto: punto.x)
-    #Create lsuper with the fist two values of p
-    lSuper = [p[0], p[1]]
-    lLower = []
-    L = []
-    for i in range (3, len(p)):
-        lSuper.append(p[i])
-        #While lSuper contains more than 2 points and 
-        #the las three points dont make a right turn
-        while (len(lSuper) > 2 and turn(lSuper[-3:][0],lSuper[-3:][1],lSuper[-3:][2]) != 1):
-            #Remove the middle point of the last three
-            lSuper.remove(lSuper[-3:][1])
-    #Put in the last two point into Llower
-    lLower.append(p[-2:][0])
-    lLower.append(p[-2:][1])
+    checking = points[index]
+    c2 = checking
 
-    for i in reversed(range(len(p)-2, 1)):
-        lLower.append(p[i])
-        
-        while (len(lLower) > 2 and turn(lLower[-3:][0],lLower[-3:][1],lLower[-3:][2]) != 1):
-            lLower.remove(lLower[-3:][1])
-               
-    lLower.remove(lLower[0])  
-    lLower.remove(lLower[-1]) 
+    crossProduct = det(currentVertex, nextVertex, checking)
+    if crossProduct < 0:
+        nextVertex = checking
+        nextIndex = index
+    index += 1
+    if index == len(points):
+        if nextVertex == leftMost:
+            break
+        index = 0
+        hull.append(nextVertex)
+        currentVertex = nextVertex
+        nextVertex = leftMost
+print(hull)
+
+def create_points(ct, min = 0, max = 50):
+    return [[randint(min, max), randint(min, max)]\
+        for _ in range(ct)] 
+
+def scatter_plot(coords, convex_hull = None):
+    xs, ys = zip(*coords) #unzip into x and y coordinates
+    plt.scatter(xs, ys)
+
+    if convex_hull:
+        for i in range(1, len(convex_hull) + 1):
+            if i == len(convex_hull): i = 0 #wrap
+            c0 = convex_hull[i-1]
+            c1 = convex_hull[i]
+            plt.plot((c0[0], c1[0]), (c0[1], c1[1]), 'r')
+    plt.show()
     
-    L = lSuper + lLower
-    return L
-
-data = np.array([
-    [2, 3],
-    [4, 6],
-    [1, 2],
-    [2,1]
-])
-x, y = data.T
-plt.scatter(x,y)
-plt.show()
-
-print(convexHull(P))
-P = [Punto(2,3), Punto(4,6), Punto(1,2), Punto(2,1)]
-
-
-# plt.xlim(0, 10)
-# plt.ylim(0, 10)
-# plt.show()
+scatter_plot(points, hull)
