@@ -141,7 +141,7 @@ def generateRandomPoints(n):
 FUNCTIONS
 """
 
-P = generateRandomPoints(5)
+P = generateRandomPoints(7)
 print(P)
 hull = convexHull(P)
 
