@@ -1,3 +1,10 @@
+%%PLOT
+
+x = linspace(0,2,10);
+plot(x, exp(x) - 4 + x);
+axes0
+
+
 %% BISSECCION
 clc
 tol = 10^(-4);

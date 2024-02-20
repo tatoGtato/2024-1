@@ -1,11 +1,18 @@
-%% BISSECCION [-4,6]
+%%PLOT
+x = linspace(-1,3);
+plot(x,0.53*x.^3 + x.^2 - 2*x - 5);
+axes0
+
+
+
+%% BISSECCION
 clc
 tol = 10^(-4);
-f = @(x) exp(x) - 4*x^2 - 8*x;
+f = @(x) 0.53*x^3 + x^2 - 2*x - 5;
 No = 20;
 
-a = -4;
-b = 6;
+a = 1;
+b = 3;1,
 fa = f(a);
 i = 0;
 
@@ -13,52 +20,15 @@ tic
 [p, i] = biseccion(f, a, b, tol, No)
 toc
 
-%RESPUESTA: 4.9108
-%ITERACIONES: 16
-
-%% BISSECCION [-1,1]
-clc
-tol = 10^(-4);
-f = @(x) exp(x) - 4*x^2 - 8*x;
-No = 20;
-
-a = -1;
-b = 1;
-fa = f(a);
-i = 0;
-
-tic
-[p, i] = biseccion(f, a, b, tol, No)
-toc
-
-%RESPUESTA: 0.1340
+%RESPUESTA: 2.0871
 %ITERACIONES: 14
 
-
-%% BISSECCION [-3,-1]
-clc
-tol = 10^(-4);
-f = @(x) exp(x) - 4*x^2 - 8*x;
-No = 20;
-
-a = -3;
-b = -1;
-fa = f(a);
-i = 0;
-
-tic
-[p, i] = biseccion(f, a, b, tol, No)
-toc
-
-%RESPUESTA: -2.0165
-%ITERACIONES: 14
-
-%% NEWTON RAPHSON p0 = -4
+%% NEWTON RAPHSON
 clc
 
-f = @(x) exp(x) - 4*x^2 - 8*x;
-fp = @(x) exp(x) - 8*x - 8;
-p0 = -4;
+f = @(x) 0.53*x^3 + x^2 - 2*x - 5;
+fp = @(x) 1.59*x^2 + 2*x - 2;
+p0 = 1;
 tol = 10^(-4);
 No = 20;
 
@@ -66,80 +36,15 @@ tic
 [p, i] = newtonRaphson(f, fp, p0, tol, No)
 toc 
 
-%RESPUESTA: -2.0165
-%ITERACIONES: 5
-
-%% NEWTON RAPHSON p0 = -1
-clc
-
-f = @(x) exp(x) - 4*x^2 - 8*x;
-fp = @(x) exp(x) - 8*x - 8;
-p0 = -1;
-tol = 10^(-4);
-No = 20;
-
-tic
-[p, i] = newtonRaphson(f, fp, p0, tol, No)
-toc 
-
-%RESPUESTA: -2.0165
-%ITERACIONES: 8
-
-
-%% NEWTON RAPHSON p0 = 4
-clc
-
-f = @(x) exp(x) - 4*x^2 - 8*x;
-fp = @(x) exp(x) - 8*x - 8;
-p0 = 4;
-tol = 10^(-4);
-No = 20;
-
-tic
-[p, i] = newtonRaphson(f, fp, p0, tol, No)
-toc 
-
-%RESPUESTA: 4.9108
-%ITERACIONES: 8
-
-%% SECANTE p = -4, p1 = 6
-
-clc
-f = @(x) exp(x) - 4*x^2 - 8*x;
-p0 = -4;
-p1 = 6;
-tol = 10^(-4);
-No = 20;
-
-tic
-[p,i] = secante(f, p0, p1, tol, No)
-toc
-
-%RESPUESTA: -2.0165
-%ITERACIONES: 8
-
-%% SECANTE p0 = -1, p1 = 1
-
-clc
-f = @(x) exp(x) - 4*x^2 - 8*x;
-p0 = -1;
-p1 = 1;
-tol = 10^(-4);
-No = 20;
-
-tic
-[p,i] = secante(f, p0, p1, tol, No)
-toc
-
-%RESPUESTA: 0.1339
+%RESPUESTA: 2.0871
 %ITERACIONES: 7
 
-%% SECANTE p0 = -3, p1 = 0
+%% SECANTE
 
 clc
-f = @(x) exp(x) - 4*x^2 - 8*x;
-p0 = -3;
-p1 = 0;
+f = @(x) 0.53*x^3 + x^2 - 2*x - 5;
+p0 = 1;
+p1 = 3;
 tol = 10^(-4);
 No = 20;
 
@@ -147,15 +52,15 @@ tic
 [p,i] = secante(f, p0, p1, tol, No)
 toc
 
-%RESPUESTA: 0.1339
-%ITERACIONES: 6
+%RESPUESTA: 2.0871
+%ITERACIONES: 8
 
-%% FALSA POSICION p0 = -4, p1 = 6
+%% FALSA POSICION 
 
 clc
-f = @(x) exp(x) - 4*x^2 - 8*x;
-p0 = -4;
-p1 = 0;
+f = @(x) 0.53*x^3 + x^2 - 2*x - 5;
+p0 = 1;
+p1 = 3;
 tol = 10^(-4);
 No = 20;
 
@@ -163,37 +68,5 @@ tic
 [p,i] = falsaPosicion(f, p0, p1, tol, No)
 toc
 
-%RESPUESTA: -2.0164
-%ITERACIONES: 19
-
-%% FALSA POSICION  p0 = -1, p1 = 1
-
-clc
-f = @(x) exp(x) - 4*x^2 - 8*x;
-p0 = -1;
-p1 = 1;
-tol = 10^(-4);
-No = 20;
-
-tic
-[p,i] = falsaPosicion(f, p0, p1, tol, No)
-toc
-
-%RESPUESTA: 0.1339
-%ITERACIONES: 10
-
-%% FALSA POSICION p0 = -3, p1 = 0
-
-clc
-f = @(x) exp(x) - 4*x^2 - 8*x;
-p0 = -3;
-p1 = 0;
-tol = 10^(-4);
-No = 20;
-
-tic
-[p,i] = falsaPosicion(f, p0, p1, tol, No)
-toc
-
-%RESPUESTA: -2.0165
-%ITERACIONES: 13
+%RESPUESTA: 2.0871
+%ITERACIONES: 11

@@ -1,3 +1,9 @@
+%%PLOT
+x = linspace(-4,10,10);
+plot(x, exp(x/2) - x.^2 - 3*x);
+axes0
+
+
 %% BISSECCION [-4, 10]
 clc
 tol = 10^(-4);
@@ -14,13 +20,13 @@ toc
 %RESPUESTA: 9.5856
 %ITERACIONES: 17
 
-%% BISSECCION [8, 10]
+%% BISSECCION [0, 2]
 clc
 tol = 10^(-4);
 f = @(x) exp(x/2) - x^2 - 3*x
 No = 20;
-a = 8;
-b = 10;
+a = 0;
+b = 2;
 
 
 tic
@@ -79,6 +85,22 @@ toc
 %RESPUESTA: 9.5856
 %ITERACIONES: 7
 
+%% NEWTON RAPHSON p0 = 0
+clc
+
+f = @(x) exp(x/2) - x^2 - 3*x;
+fp = @(x) (exp(x/2)/2) - 2*x - 3
+p0 = 0;
+tol = 10^(-4);
+No = 20;
+
+tic
+[p, i] = newtonRaphson(f, fp, p0, tol, No)
+toc 
+
+%RESPUESTA: 0.3560
+%ITERACIONES: 4
+
 %% SECANTE p0 = -4, p1 = 10
 
 clc
@@ -112,11 +134,11 @@ toc
 %ITERACIONES: 6
 
 
-%% SECANTE p0 = -1, p1 = 2
+%% SECANTE p0 = 0, p1 = 2
 
 clc
 f = @(x) exp(x/2) - x^2 - 3*x;
-p0 = -1;
+p0 = 0;
 p1 = 2;
 tol = 10^(-4);
 No = 20;
@@ -160,11 +182,11 @@ toc
 %RESPUESTA: 9.5856
 %ITERACIONES: 8
 
-%% FALSA POSICION p0 = -1, p1 = 2
+%% FALSA POSICION p0 = 0, p1 = 2
 
 clc
 f = @(x) exp(x/2) - x^2 - 3*x;
-p0 = -1;
+p0 = 0;
 p1 = 2;
 tol = 10^(-4);
 No = 20;
