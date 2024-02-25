@@ -15,7 +15,7 @@ I = eye(n);
 
 
 %MATRIZ DE U CON T = 0 
-for i = 0.0 :0.005: t
+for i = 0.0 :0.005: 1
    if i ~= t
     U0_X(row, 1) = f(i);
     row = row + 1; 
@@ -69,7 +69,7 @@ I = eye(n);
 
 
 %MATRIZ DE U CON T = 0 
-for i = 0.0 :0.005: t
+for i = 0.0 :0.005: 1
    if i ~= t
     U0_X(row, 1) = f(i);
     row = row + 1; 
@@ -110,10 +110,10 @@ stem(X,Y)
 %% PUNTO 6
 
 n = 200;
-t = 0.3;
-c = 0.5;
+t = 0.5;
+c = -0.5;
 
- f = @(x) 1 - (x-0.7)/(0.1) %|x-0.7| <= 0.1
+f = @(x) 1 - (x-0.7)/(0.1); %|x-0.7| <= 0.1
 
 
 U0_X = zeros(n,1);
@@ -123,10 +123,15 @@ row = 1;
 I = eye(n);
 
 
+
 %MATRIZ DE U CON T = 0 
-for i = 0.0 :0.005: t
+for i = 0.0 :0.005: 1
    if i ~= t
-    U0_X(row, 1) = f(i);
+    if (abs(i-0.7)<= 0.1)
+        U0_X(row, 1) = f(i);
+    else
+        U0_X(row, 1) = 0
+    end   
     row = row + 1; 
    end
 end
@@ -139,12 +144,19 @@ for i = 1.0: 1.0 :n
    end
 end
 
-%U = -c*(shiftMatrix*U0_X) + (c+1)*U0_X
+
 % LAX-WENDROFF METHOD
+% for i = 0.0: 0.005 : t
+%     U = 1/2*c*(c-1)*(shiftMatrix*U0_X) - (c^2 - 1)*U0_X + 1/2 * c*(c+1) * U0_Xm1; 
+%     U0_X = U;
+%     U0_Xm1 = U0_X;
+% end
+
+
+%ONE SIDED METHOD
 for i = 0.0: 0.005 : t
-    U = 1/2*c*(c-1)*(shiftMatrix*U0_X) - (c^2 - 1)*U0_X + 1/2 * c*(c+1) * U0_Xm1; 
+    U = -c*(shiftMatrix*U0_X) + (c+1)*U0_X;
     U0_X = U;
-    U0_Xm1 = U0_X;
 end
 
 
@@ -155,9 +167,9 @@ end
 
 figure
 X = linspace(0,1,200);
-if (t == 0)
-    Y = f(X);
-else 
-    Y = abs(U);
-end
+% if (t == 0)
+%     Y = f(X);
+% else 
+     Y = abs(U);
+% end
 stem(X,Y)
