@@ -66,8 +66,8 @@ def plotPoints(points, hull):
     x, y = data.T
     ax1.scatter(x,y)
     
-    ax1.set_xlim(left=0, right=12)
-    ax1.set_ylim(bottom=0, top=12)
+    ax1.set_xlim(left=-1, right=12)
+    ax1.set_ylim(bottom=-1, top=12)
     
     #PLOT 2
     ax2.scatter(x,y)
@@ -83,8 +83,8 @@ def plotPoints(points, hull):
     
     ax2.plot(x_values, y_values, 'bo', linestyle="--")
     
-    ax2.set_xlim(left=0, right=12)
-    ax2.set_ylim(bottom=0, top=12)
+    ax2.set_xlim(left=-1, right=12)
+    ax2.set_ylim(bottom=-1, top=12)
 
 def convexHull(points):
     hull = []  
@@ -108,7 +108,7 @@ def convexHull(points):
     lLower.append(points[-2:][1])
     lLower.append(points[-2:][0])
     
-    for i in range (n-1, 0, -1):
+    for i in range (n-1, 0-1, -1):
         lLower.append(points[i])
         
         #LLOWER CONTAINS MORE THAN 2 AND LAST 3 DONT MAKE A RIGHT TURN
@@ -141,7 +141,7 @@ def generateRandomPoints(n):
 FUNCTIONS
 """
 
-P = generateRandomPoints(7)
+P = generateRandomPoints(9)
 print(P)
 hull = convexHull(P)
 

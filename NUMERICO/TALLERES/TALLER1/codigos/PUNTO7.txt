@@ -1,0 +1,60 @@
+x = [-1,-0.5,0,0.5,1];
+xi = x;
+f = @(x) 1./(1+25*x.^2);
+y = f(x);
+[a,b,c,d] = cubicSpline(x,y);
+
+% Número de splines
+num_splines = length(a);
+
+syms x
+
+% Inicializamos la ecuación del spline
+spline_equation = 0;
+
+% Generamos las ecuaciones de los splines cúbicos
+for i = 1:num_splines
+    % Ecuación del i-ésimo spline
+    spline_i = a(i) + b(i)*(x - xi(i)) + c(i)*(x - xi(i))^2 + d(i)*(x - xi(i))^3
+    disp('--------------------------------------------------------------------------')
+    % Sumamos al conjunto total de ecuaciones
+    spline_equation = spline_equation +spline_i;
+end
+
+% Mostramos la ecuación resultante
+disp('Ecuación de los splines cúbicos:');
+disp(spline_equation);
+
+% Definimos las funciones 
+s0 = @(x) (7200*(x + 1).^3)/2639 - (1275*x)/2639 - 2347/5278;
+s1 = @(x) (4125*x)/2639 + (10800*(x + 1/2).^2)/2639 - (19900*(x + 1/2).^3)/2639 + 4853/5278;
+s2 = @(x) (19900*x.^3)/2639 - (19050*x.^2)/2639 + x/4503599627370496 + 1;
+s3 = @(x) (10800*(x - 1/2).^2)/2639 - (4125*x)/2639 - (7200*(x - 1/2).^3)/2639 + 4853/5278;
+
+% Definimos los intervalos
+x1 = linspace(-1, -0.5, 10);
+x2 = linspace(-0.5, 0, 10);
+x3 = linspace(0,0.5,10);
+x4 = linspace(0.5,1,10);
+
+
+figure;
+
+% Plot 
+plot(x1, s0(x1), 'r--', 'LineWidth', 2);  
+hold on;
+
+
+plot(x2, s1(x2), 'b--', 'LineWidth', 2);  
+hold on;
+
+plot(x3, s2(x3), 'g--', 'LineWidth', 2); 
+hold on;
+
+plot(x4, s3(x4), 'm--', 'LineWidth', 2); 
+
+
+xlabel('x-axis');
+ylabel('y-axis');
+title('Splines');
+legend('s0(x1)', 's1(x2)' ,'s2(x3)' ,'s3(x4)');

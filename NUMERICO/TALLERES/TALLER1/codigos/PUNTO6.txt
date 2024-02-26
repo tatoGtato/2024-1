@@ -1,9 +1,16 @@
 clc
 
-% Ejemplo de uso
+
 x = 1:10;
 f = log(x);
-x_estimado = 1.2;
+x_estimado = 7.2;
+
+
+figure
+y = @(x) log(x)
+scatter(x_estimado,y(x_estimado),'o')
+hold on
+plot(x,f)
 
 
 lagrangeInterpolation(x,f,x_estimado)
