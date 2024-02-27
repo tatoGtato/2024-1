@@ -2,25 +2,26 @@ clc
 syms X
 sympref('FloatingPointOutput',true)
 
-n = 5;
-x = [1 ; 2 ; 3 ; 5 ; 7 ; 8];
-y = [3 ; 6 ; 19 ; 99 ; 291 ; 444];
+x=[22;28;35;40;44;47;49;54;56;61;65;69;71;73;78;82;87;96;98;100];
+y=[16;18;21;23;25;27;29;31;34;37;39;42;44;43;41;37;36;38;38;36];
+%plot(x,y, 'o')
 
+n = 19;
 
-[a,b,c,d] = SplineCubico(n,x,y);
-a
-b
-c
-d
+[a, b, c, d] = SplineCubico(n,x, y)
+
 
 figure; hold on
-for i = 1.0 :1: n 
-        % X = x(i):0.001:x(i+1);
-        si = a(i, 1) + b(i, 1)*(X-x(i, 1)) + c(i, 1)*(X-x(i, 1)).^2 + d(i, 1)*(X-x(i, 1)).^3
-        % plot(X,si,'DisplayName',strcat('S=',"["+num2str(x(i))+","+num2str(x(i+1))+"]"));
-        % xlim([0 10])
-        % %ylim([-0.4 0.8])
-        % legend();
+for i = 1.0 :1: n
+        X = x(i):0.001:x(i+1);  
+        si = a(i, 1) + b(i, 1)*(X-x(i, 1)) + c(i, 1)*(X-x(i, 1)).^2 + d(i, 1)*(X-x(i, 1)).^3;
+        % if (x(i) == 65)
+        %     si
+        % end
+        plot(X,si,'DisplayName',strcat('S=',"["+num2str(x(i))+","+num2str(x(i+1))+"]"));
+        xlim([0 60])
+        ylim([0 60])
+        legend();
 end
 
 
