@@ -1,0 +1,48 @@
+clc
+
+% Ejemplo de uso
+x = 1:10;
+f = log(x);
+x_estimado = 7.2;
+
+
+figure
+y = @(x) log(x)
+scatter(x_estimado,y(x_estimado),'o')
+hold on
+plot(x,f)
+
+
+lagrangeInterpolation(x,f,x_estimado)
+
+
+function valorIntermedio = lagrangeInterpolation(x, y, x_eval)
+  % Convertir a valores de coma flotante
+  x = double(x);
+  y = double(y);
+  x_eval = double(x_eval);
+
+  n = length(x); % Número de puntos
+
+  % Detectar si x_eval está fuera del rango
+  if x_eval < x(1) || x_eval > x(n)
+    disp('Error: El valor a estimar está fuera del rango de datos.');
+    return;
+  end
+
+  % Interpolación cúbica para todos los puntos
+  L = ones(1, n); % Vector de polinomios base de Lagrange
+  for j = 1:n
+        for k = 1:n
+          if k ~= j
+            L(j) = L(j) * (x_eval - x(k)) / (x(j) - x(k));
+          end
+        end
+  end
+
+  valorIntermedio = 0;
+  for i = 1:n
+    valorIntermedio = valorIntermedio + y(i) * L(i);
+  end
+end
+
