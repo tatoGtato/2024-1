@@ -8,7 +8,26 @@ dx = pi/20;
 dt = (pi^2/800);
 muuuu = (K*dt)/(dx^2);
 T = (3*pi^2/80);
-Uo = zeros(1,ceil(T/dt)+1);
+n = ceil(T/dt)+1;
+Uo = zeros(1,n);
+shiftMatrixF = zeros(n,n);
+shiftMatrixB = zeros(n,n);
+
+
+%MATRIZ DE FORWARD
+for i = 1.0: 1.0 :n
+   if i ~= n 
+    shiftMatrixF(i, i+1) = 1;
+   end
+end
+
+
+%MATRIZ DE BACKWARD
+for i = 1.0: 1.0 :n
+   if i ~= n 
+    shiftMatrixB(i+1, i) = 1;
+   end
+end
 
 
 %Construimos Uo
@@ -29,39 +48,56 @@ end
 %Construimos la aproximacion
 
 for j = 0: dt : T
-    U = Uo.*(1 - 4*(muuuu)*sin((K*dx)/2)^2);
+    U = (muuuu) * (Uo * shiftMatrixF) + (1 - 2*muuuu)*Uo + muuuu * muuuu * (Uo * shiftMatrixB);
     Uo = U;
 end
 
-
-
 figure
 X = 0: dt: T;
-Y = Uo;
-size(X)
-size(Y)
+Y = U;
 stem(X,Y)
 
 
 %%
 %EXACTA
-syms x t 
+% Constants
+L = pi;
+T = (3 * pi^2) / 80;
+dx = pi / 20;
+dt = pi^2 / 1000;
 
-bk = @(k) (4*(-1)^((k+1)/2))/pi*k^2;
+% Number of points
+Nx = round(L / dx);
+Nt = round(T / dt);
 
-Dx = pi/20;
+% Initialize solution matrix
+u = zeros(Nx, Nt);
 
-Dt = pi/40;
+% Function to compute bk
+compute_bk = @(k) 4 * (-1)^((k+1)/2) / (pi * k^2);
 
-U = @(k) bk(k)*sin(k*x)*exp(-k^2*t)
+% Compute the solution
+x = linspace(0, L, Nx);
+t = linspace(0, T, Nt);
 
-Uf = U(1)
-
-for k = 2: 1 : 100
-    Uf = Uf + U(k);
+for i = 1:Nt
+    for j = 1:Nx
+        for k = 1:100  % summing up to a large enough value
+            u(j, i) = u(j, i) + compute_bk(2*k - 1) * sin((2*k - 1) * x(j)) * exp(-((2*k - 1)^2) * t(i));
+        end
+    end
+end
+u = -u; 
+% Plotting
+figure;
+for i = 1:5:Nt  % Plot at different times
+    plot(x, u(:, i), 'DisplayName', ['t = ', num2str(t(i))]);
+    hold on;
 end
 
-figure
-Y = U;
-X = linspace(0,1,21);
-stem(X,Y)
+title('Numerical Solution of the PDE at Different Times');
+xlabel('x');
+ylabel('u(x, t)');
+legend('Location', 'best');
+grid on;
+hold off;
