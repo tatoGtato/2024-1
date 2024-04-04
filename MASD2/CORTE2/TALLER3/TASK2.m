@@ -7,8 +7,12 @@ K = 1;
 dx = pi/20;
 dt = (pi^2/800);
 muuuu = (K*dt)/(dx^2);
+
 T = (3*pi^2/80);
-n = ceil(T/dt)+1;
+n = 20+1;
+
+
+
 Uo = zeros(1,n);
 shiftMatrixF = zeros(n,n);
 shiftMatrixB = zeros(n,n);
@@ -42,19 +46,23 @@ for x = 0.0: dx :pi
     else
         Uo(i) = pi-x;
     end
-    i = i +1;
+    i = i + 1;
 end
 
 %Construimos la aproximacion
 
-for j = 0: dt : T
+for j = 0: dt : 0
     U = (muuuu) * (Uo * shiftMatrixF) + (1 - 2*muuuu)*Uo + muuuu * muuuu * (Uo * shiftMatrixB);
     Uo = U;
 end
 
 figure
-X = 0: dt: T;
+X = linspace(0, pi, n);
 Y = U;
+
+size(X)
+size(Y)
+
 stem(X,Y)
 
 
