@@ -51,19 +51,68 @@ end
 
 %Construimos la aproximacion
 
-for j = 0: dt : 0
+for j = 0: dt : T
     U = (muuuu) * (Uo * shiftMatrixF) + (1 - 2*muuuu)*Uo + muuuu * muuuu * (Uo * shiftMatrixB);
     Uo = U;
 end
 
 figure
 X = linspace(0, pi, n);
-Y = U;
+Y = Uo;
 
 size(X)
 size(Y)
 
 stem(X,Y)
+
+%% 
+clc
+clear all 
+
+K = 1;
+dx = pi/20;
+dt = (pi^2/800);
+mu = (K*dt)/(dx^2);
+
+T = (3*pi^2/80);
+n = 20+1;
+
+Uo = zeros(1,n);
+
+% Construct initial condition Uo
+for i = 1:n
+    x = (i-1) * dx;
+    if (x < pi/2)
+        Uo(i) = x;
+    elseif (x == pi/2)
+        Uo(i) = pi/2;
+    else
+        Uo(i) = pi-x;
+    end
+end
+
+% Construct the approximation using central difference method
+A = zeros(n,n);
+for i = 2:n-1
+    A(i,i-1) = mu;
+    A(i,i) = 1 - 2*mu;
+    A(i,i+1) = mu;
+end
+A(1,1) = 1;
+A(n,n) = 1;
+
+% Construct the next state U using implicit method
+for j = 0:dt:0.2
+    U = A * Uo';
+    Uo = U';
+end
+
+% Plotting
+figure
+X = linspace(0, pi, n);
+Y = Uo;
+stem(X,Y)
+
 
 
 %%
