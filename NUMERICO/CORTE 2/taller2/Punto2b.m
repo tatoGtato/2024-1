@@ -7,16 +7,16 @@ M = @(t) Q(t)*c(t);
 
 x0 = 2;
 x1 = 8;
-TOL = 0.1
+TOL = 0.001
 
 %n = 1
-romberg(M, x0, x1, 1);
+romberg(M, x0, x1, 1, TOL);
 
 %n = 8
-romberg(M, x0, x1, 4);
+romberg(M, x0, x1, 4, TOL);
 
 %n = 16
-romberg(M, x0, x1, 8)
+romberg(M, x0, x1, 8, TOL)
 
 
 
@@ -26,7 +26,8 @@ romberg(M, x0, x1, 8)
 
 %% FUCIONES UTILIZADAS
 
-function R = romberg(f, a, b, n)
+%RONBERG CON TOLERANCIA
+function R = romberg(f, a, b, n, tolerance)
     % Paso 1: Inicializar h y el primer elemento de R
     h = b - a;
     R = zeros(n, n); % Crear una matriz n x n para almacenar los resultados
@@ -59,5 +60,11 @@ function R = romberg(f, a, b, n)
 
         % Paso 8: Actualizar la fila 1 de R para la siguiente iteración
         R(1, :) = R(2, :);
+
+        % Paso 9: Verificar si se alcanzó la tolerancia
+        if i > 2 && abs(R(2, i) - R(1, i - 1)) < tolerance
+            fprintf('Tolerancia alcanzada. Se devuelve el valor actual.\n');
+            return;
+        end
     end
 end

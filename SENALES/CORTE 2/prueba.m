@@ -1,6 +1,1 @@
-
-a = "ola/xao";
-
-b = "ola/";
-
-c = erase(a,b)
+https://www.youtube.com/watch?v=BfbFc9Mde44
