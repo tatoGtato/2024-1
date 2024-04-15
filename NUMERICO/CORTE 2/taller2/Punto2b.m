@@ -7,16 +7,17 @@ M = @(t) Q(t)*c(t);
 
 x0 = 2;
 x1 = 8;
-TOL = 0.001
+TOL = 0.0001;
 
 %n = 1
-romberg(M, x0, x1, 1, TOL);
+romberg(M, x0, x1, 1, TOL)
 
 %n = 8
-romberg(M, x0, x1, 4, TOL);
+romberg(M, x0, x1, 5, TOL)
 
 %n = 16
-romberg(M, x0, x1, 8, TOL)
+romberg(M, x0, x1, 8, TOL);
+
 
 
 

@@ -15,6 +15,22 @@ hmax = 0.4;
 
 [T, W, H] = rungeKuttaFehlberg(f, a, b, yo, e, hmax, hmin)
 
+options = odeset('RelTol', e);
+[tOde, wOde] = ode45(f, [a b], yo, options);
+
+tiledlayout(2,1)
+% Top plot
+nexttile
+plot(T, W);
+title('Aproximacion')
+xlim([0 2])
+
+% Bottom plot
+nexttile
+plot(tOde,wOde)
+title('Exacta')
+xlim([0 2])
+
 %%
 %B
 clc
@@ -31,6 +47,23 @@ hmin = 0.1 * h;
 hmax = 0.75;
 
 [T, W, H] = rungeKuttaFehlberg(f, a, b, yo, e, hmax, hmin)
+
+options = odeset('RelTol', e);
+[tOde, wOde] = ode45(f, [a b], yo, options);
+
+tiledlayout(2,1)
+% Top plot
+nexttile
+plot(T, W);
+title('Aproximacion')
+xlim([0 4])
+
+% Bottom plot
+nexttile
+plot(tOde,wOde)
+title('Exacta')
+xlim([0 4])
+
 
 %%
 function [T, W, H] = rungeKuttaFehlberg(f, a, b, alpha, TOL, hmax, hmin)
