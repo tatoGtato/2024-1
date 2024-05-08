@@ -4,7 +4,7 @@ clc
 clear all
 
 %Llamamos el archivo
-file = "Melody3.mp3";
+file = "LalaTrim45.mp3";
 
 %Sacamos la informacion de la cancion 
 info = audioinfo(file)
@@ -54,15 +54,15 @@ clc
 clear all
 
 %Importar y tomar informacion de las canciones y el imput
-song1 = "Melody3.mp3";
+song1 = "superBaseDeDatosSuperSeguraConSuperDatos/Lala.mp3";
 info = audioinfo(song1)
 [cancion1,Fs1] = audioread(song1);
 
-song2 = "takeTrain.mp3";
+song2 = "superBaseDeDatosSuperSeguraConSuperDatos/takeTrain.mp3";
 info2 = audioinfo(song2)
 [cancion2,Fs2] = audioread(song2);
 
-input = "Melody3Trim.mp3";
+input = "LalaTrim45.mp3";
 infoInp = audioinfo(input)
 [cancionI,FsI] = audioread(input);
 
@@ -147,7 +147,7 @@ ax(1) = subplot(2,1,1);
 plot(lag1/Fs1,C1,"k")
 ylabel("Amplitude")
 grid on
-title("Cross-Correlation entre Melody3 y el input")
+title("Cross-Correlation entre Lala (Cancion coincidencia) y el input")
 
 ax(2) = subplot(2,1,2); 
 plot(lag2/Fs2,C2,"r")
@@ -155,14 +155,17 @@ ylabel("Amplitude")
 grid on
 title("Cross-Correlation entre Take the A train y el input")
 xlabel("Time(s)") 
-axis(ax(1:2),[-1.5 1.5 -700 700])
+axis(ax(1:2),[0 200 -700 700])
+
+max(abs(C1))
+max(abs(C2))
 
 %%
 %Encontrar el delay
 %En este punto ya sabemos que la cancion1 es la misma cancion del input
 
-[~,I] = max(abs(C1));
-SampleDiff = lag1(I)
+[~,I] = max(abs(C1))
+SampleDiff = lag1(I);
 timeDiff = SampleDiff/Fs1
 
 %%

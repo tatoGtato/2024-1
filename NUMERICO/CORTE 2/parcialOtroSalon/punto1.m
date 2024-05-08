@@ -7,7 +7,10 @@ x=[0;20;80;100;130;150;170;200;235;250;270;300;320;350;380;400;435;450;460;490];
 yA=[0;0;0.1;0.25;1;1.35;1.55;1.85;2;2.2;2.5; 2.8; 3  ; 3.4; 4  ; 4.3; 5;   5.5; 6;   6.5];
 yN=[0, 0.1,0.35,0.4,0.5,0.6, 0.85,0.95,0.85,0.6, 0.45,0.35,0.2,0.1, 0.05,0  , 0,  -0.2,0  ,0];
 
-y = zeros(20,1)
+y = zeros(20,1);
+
+distancia = zeros(20,1);
+aceleracion = zeros(20,1);
 
 for i = 1: size(x,1)
     y(i) = sqrt( (yA(i))^2 + (yN(i))^2 );
@@ -33,11 +36,19 @@ n = 19;
 % end
 
 %Para simpson
-for i = 1.0 :1: n
-        j = x(i):0.001:x(i+1);  
-        si = @(X) a(i, 1) + b(i, 1)*(X-x(i, 1)) + c(i, 1)*(X-x(i, 1)).^2 + d(i, 1)*(X-x(i, 1)).^3
-        SimpsonCompuesto(si, x(i), x(i+1), n, 1/3)
+for i = 1.0 :1: n 
+     si = @(X) a(i, 1) + b(i, 1)*(X-x(i, 1)) + c(i, 1)*(X-x(i, 1)).^2 + d(i, 1)*(X-x(i, 1)).^3;
+     distancia(i) = SimpsonCompuesto(si, x(i), x(i+1), n, 1/3);
 end
+
+%Para derivacion 
+for i = 1.0 :1: n 
+     si = @(X) a(i, 1) + b(i, 1)*(X-x(i, 1)) + c(i, 1)*(X-x(i, 1)).^2 + d(i, 1)*(X-x(i, 1)).^3;
+     aceleracion(i) = richardson_extrapolation_3puntos(si, x(i), 0.2);
+end
+
+%%
+
 
 
 %%
@@ -107,4 +118,21 @@ end
 function E = ErrorRelativo(aprox)
     E = ((abs(12.42478 - aprox) )/12.42478)*100;
     return
+end
+
+function [derivada] = richardson_extrapolation_3puntos(f, x, h)
+    %3 puntos
+    derivada = (1/(2*h)) * (-3*f(x) + 4*f(x + h) - f(x + 2*h));
+
+    % Extrapolación de Richardson
+    f1 = richardson_aux(f, x, h, 1);
+    f2 = richardson_aux(f, x, h, 2);
+
+    % Corrección de la derivada utilizando extrapolación de Richardson
+    derivada = (4*f1 - f2) / 3;
+end
+
+function [f] = richardson_aux(f, x, h, n)
+    % Función auxiliar para la extrapolación de Richardson.
+    f = (1/(2^n*h)) * (-f(x + h) + f(x - h));
 end
