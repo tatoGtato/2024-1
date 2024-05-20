@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<body style="background-color:white;font-family:arial;">
+        <style>
+            .parent {
+              position: relative;
+              top: 0;
+              left: 0;
+            }
+            .image1 {
+              position: relative;
+              top: 0;
+              left: 0;
+            }
+            .image2 {
+              position: absolute;
+              width: 48px;
+              height: 80px
+            }
+        </style>
+        <div class="parent" id="parent">
+            <p style="padding-left:20px">
+                <img class="image1" src="pentagram.png", width="931", height="148">
+                <script>  
+
+                    var list = ["Do4", "Sol5", "La6"];
+
+
+                    for (var i = 0; i < list.length; i++){
+                        var minleft = 90;
+                        var mintop = 32;
+                        let img = document.createElement('img');
+                        img.src = "not.png";
+                        img.className = "image2"
+                        img.style.left = `${minleft + i*30}px`
+                        img.style.top = `${mintop + noteToPx(list[i])}px`
+                        document.getElementById('parent').appendChild(img);
+                    }
+
+                    function noteToPx(note) {
+                        noteAl = note.slice(0, -1);
+                        console.log(noteAl)
+                        moveUp = 0
+                        switch (noteAl) {
+                            case 'Do':
+                                return(moveUp+10*4);
+                            case 'Do#':
+                                return(moveUp+10*4);
+                            case 'Re':
+                                return(moveUp+10*3);
+                            case 'Re#':
+                                return(moveUp+10*3);
+                            case 'Mi':
+                                return(moveUp+10*2);
+                            case 'Fa':
+                                return(moveUp+10);
+                            case 'Fa#':
+                                return(moveUp+10);
+                            case 'Sol':
+                                return(moveUp);
+                            case 'Sol#':
+                                return(moveUp);
+                            case 'La':
+                                return(moveUp-10);
+                            case 'La#':
+                                return(moveUp-10);
+                            case 'Si':
+                                return(moveUp-10*2);
+                            default:
+                                console.log(`:c`);
+                        }
+                    }
+
+                </script>
+            </p>
+        </div>		
+	</body>
+</html>
