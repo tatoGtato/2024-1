@@ -23,48 +23,56 @@
                 <img class="image1" src="pentagram.png", width="931", height="148">
                 <script>  
 
-                    var list = ["Do4", "Sol5", "La6"];
+                    function setup(htmlComponent) {
+                        htmlComponent.addEventListener("DataChanged", function(event) {
+                            
+                            var list = htmlComponent.Data;
 
+                            if (typeof list == "string"){
+                                list = [list]
+                            }
 
-                    for (var i = 0; i < list.length; i++){
-                        var minleft = 90;
-                        var mintop = 32;
-                        let img = document.createElement('img');
-                        img.src = "not.png";
-                        img.className = "image2"
-                        img.style.left = `${minleft + i*30}px`
-                        img.style.top = `${mintop + noteToPx(list[i])}px`
-                        document.getElementById('parent').appendChild(img);
+                            for (var i = 0; i < list.length; i++){
+                                var minleft = 90;
+                                var mintop = 32;
+                                let img = document.createElement('img');
+                                img.src = "not.png";
+                                img.className = "image2"
+                                img.style.left = `${minleft + i*30}px`
+                                img.style.top = `${mintop + noteToPx(list[i])}px`
+                                document.getElementById('parent').appendChild(img);
+                            }slice(0, -1)
+                        });     
                     }
 
                     function noteToPx(note) {
-                        noteAl = note.slice(0, -1);
+                        noteAl = note.slice(0, -1).toLowerCase();
                         console.log(noteAl)
                         moveUp = 0
                         switch (noteAl) {
-                            case 'Do':
+                            case 'do':
                                 return(moveUp+10*4);
-                            case 'Do#':
+                            case 'do#':
                                 return(moveUp+10*4);
-                            case 'Re':
+                            case 're':
                                 return(moveUp+10*3);
-                            case 'Re#':
+                            case 're#':
                                 return(moveUp+10*3);
-                            case 'Mi':
+                            case 'mi':
                                 return(moveUp+10*2);
-                            case 'Fa':
+                            case 'fa':
                                 return(moveUp+10);
-                            case 'Fa#':
+                            case 'fa#':
                                 return(moveUp+10);
-                            case 'Sol':
+                            case 'sol':
                                 return(moveUp);
-                            case 'Sol#':
+                            case 'sol#':
                                 return(moveUp);
-                            case 'La':
+                            case 'la':
                                 return(moveUp-10);
-                            case 'La#':
+                            case 'la#':
                                 return(moveUp-10);
-                            case 'Si':
+                            case 'si':
                                 return(moveUp-10*2);
                             default:
                                 console.log(`:c`);
@@ -73,6 +81,6 @@
 
                 </script>
             </p>
-        </div>		
+        </div>	
 	</body>
 </html>
