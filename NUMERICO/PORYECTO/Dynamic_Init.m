@@ -21,8 +21,8 @@ clc
 d = 0.8442;
 temp = 0.728;
 n = 100;
-T = 0.9;
-dt = 0.01;
+T = 2;
+dt = 0.1;
 rc = 0.5;
 %Antes de empezar el algoritmo se tienen que calcular el tamaño de la caja
 %donde estaran las particulas (boundary conditions) 
@@ -31,59 +31,67 @@ rc = 0.5;
 m = 1;
 v = m/d;
 
-box = v^(1/3);
+box_ = v^(1/3);
 %Con el volumen se saca BOX
 
 %%
 clc
 
-molecularDynamics(T, dt, n, temp, box, rc)
+molecularDynamics(T, dt, n, temp, box_, rc)
 
 %% FUNCIONES UTILIZADAS
 
 %ESTA FUNCION ES COMO EL MAIN DEL PROGRAMA, ACA SE EJECUTARAN TODAS
 %LAS SUBRUTINAS
-% function molecularDynamics(T, dt, n, d, temp, box, rc)
-% 
+% function molecularDynamics(T, dt, n, temp, box, rc)
 %    rc = min(rc, box);
 % 
 %    [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = dynamic_init(n, temp, dt, box);
-%    subplot(1,2,1)
-%    scatter3(Xx,Xy,Xz)
+%    subplot(1, 2, 1)
+%    scatter3(Xx, Xy, Xz)
 %    t = 0;
-% 
 % 
 %    while (t < T)
 %        [Fx, Fy, Fz, en] = force(n, box, rc, Xx, Xy, Xz);
-%        [Xx, Xy, Xz, xmx, xmy, xmz] = integrate(en, n, dt, Fx, Fy, Fz, Xx, Xy, Xz, xmx, xmy, xmz);
-%        t = t + dt;
+%        [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = integrate(n, dt, Fx, Fy, Fz, Vx, Vy, Vz, Xx, Xy, Xz, xmx, xmy, xmz);
+%        t = t + dt
 %    end 
-%    subplot(1,2,2)
-%    scatter3(Xx,Xy,Xz)
-% end 
-function molecularDynamics(T, dt, n, temp, box, rc)
-   rc = min(rc, box);
+% 
+%    subplot(1, 2, 2)
+%    scatter3(Xx, Xy, Xz)
+%    Xx, Xy, Xz
+% end
+function molecularDynamics(T, dt, n, temp, box_, rc)
+    rc = min(rc, box_);
 
-   [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = dynamic_init(n, temp, dt, box);
-   subplot(1, 2, 1)
-   scatter3(Xx, Xy, Xz)
-   t = 0;
+    [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = dynamic_init(n, temp, dt, box_);
+    subplot(1, 2, 1)
+    scatter3(Xx, Xy, Xz)
+    t = 0;
 
-   while (t < T)
-       [Fx, Fy, Fz, en] = force(n, box, rc, Xx, Xy, Xz);
-       [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = integrate(n, dt, Fx, Fy, Fz, Vx, Vy, Vz, Xx, Xy, Xz, xmx, xmy, xmz);
-       t = t + dt
-   end 
-   
-   subplot(1, 2, 2)
-   scatter3(Xx, Xy, Xz)
-   Xx, Xy, Xz
+    while (t < T)
+        [Fx, Fy, Fz, en] = force(n, box_, rc, Xx, Xy, Xz);
+        [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = integrate(n, dt, Fx, Fy, Fz, Vx, Vy, Vz, Xx, Xy, Xz, xmx, xmy, xmz);
+        t = t + dt
 
+        % Llamada a la función SAMPLE para realizar el muestreo
+        Switch = 1; % Establece el switch en 1 para indicar que es una llamada de muestreo
+        Is = round(t / dt); % Calcula el número total de pasos de tiempo desde el inicio de la simulación
+        En = en; % Energía total (potencial + cinética)
+        Vir = sum(Fx.*Xx + Fy.*Xy + Fz.*Xz); % Virial total
+        Enk = sum(0.5 * (Vx.^2 + Vy.^2 + Vz.^2)); % Energía cinética total
+        Delt = dt; % Paso de tiempo de la simulación MD
+        sample_2(Switch, Is, En, Vir, Enk, Delt); % Llama a la función SAMPLE
+    end 
+
+    subplot(1, 2, 2)
+    scatter3(Xx, Xy, Xz)
+    disp([Xx, Xy, Xz]); % Muestra las posiciones finales
 end
 
 
 %ESTA FUNCION NOS DA LA VELOCIDAD Y LAS POSICIONES DE LAS PARTICULAS
-function [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = dynamic_init(n, temp, dt, box)
+function [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = dynamic_init(n, temp, dt, box_)
     sumVx = 0;
     sumVy = 0;
     sumVz = 0;
@@ -96,7 +104,7 @@ function [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = dynamic_init(n, temp, dt, box
     % Xy = zeros(n);  
     % Xz = zeros(n);
 
-    Vx = zeros(n);
+    Vx = zeros(n); 
     Vy = zeros(n);
     Vz = zeros(n);
 
@@ -104,7 +112,7 @@ function [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = dynamic_init(n, temp, dt, box
     xmy = zeros(n);
     xmz = zeros(n);
     
-    [Xx, Xy, Xz] = lattice_pos(n, box);
+    [Xx, Xy, Xz] = lattice_pos(n, box_);
 
     for i = 1 : n       %Seponen las particulas en una lattice con velocidad aleatoria 
         Vx(i) = randi(100) - 0.5;
@@ -145,7 +153,7 @@ function [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = dynamic_init(n, temp, dt, box
 end 
 
 %ESTA ACTUA COMO FUNCION HELPER DE DYNAMIC_INIT() Y NOS DA UNA POSICION EN 
-function [X, Y, Z] = lattice_pos(npart, box)
+function [X, Y, Z] = lattice_pos(npart, box_)
     %LATTICE Place `npart` particles on a simple cubic lattice with density `rho`
     %
     % [X, Y, Z] = lattice(npart, box)
@@ -159,7 +167,7 @@ function [X, Y, Z] = lattice_pos(npart, box)
     end
 
     % Calculate the distance between particles
-    del = box / double(n);
+    del = box_ / double(n);
 
     % Initialize particle coordinates
     X = zeros(1, npart);
@@ -191,7 +199,7 @@ function [X, Y, Z] = lattice_pos(npart, box)
 end
 
 %ESTA FUNCION NOS DA A FUERZA Y LA ENERGIA DEL SISTEMA
-function [Fx, Fy, Fz, en] = force(n, box, rc, Xx, Xy, Xz)
+function [Fx, Fy, Fz, en] = force(n, box_, rc, Xx, Xy, Xz)
     RC2 = rc*rc;
 
     en = 0;   
@@ -207,13 +215,13 @@ function [Fx, Fy, Fz, en] = force(n, box, rc, Xx, Xy, Xz)
             dy = Xy(i) - Xy(j);
             dz = Xz(i) - Xz(j);
 
-            dx = dx-box*round(dx/box);
-            dy = dy-box*round(dy/box);
-            dz = dz-box*round(dz/box);
+            dx = dx-box_*round(dx/box_);
+            dy = dy-box_*round(dy/box_);
+            dz = dz-box_*round(dz/box_);
 
             r2 = dx^2 + dy^2 + dz^2;
-
-            if (r2 < RC2)  %PREGUNTA!!!
+ 
+            if (r2 < RC2)  
                 r2i = 1/r2;
                 r6i = r2i^3;
                 ff = 48 * r2i * r6i * (r6i - 0.5);
@@ -233,68 +241,34 @@ function [Fx, Fy, Fz, en] = force(n, box, rc, Xx, Xy, Xz)
 end
 
 % %ESTA FUNCION INTEGRA LAS ECUACIONES DE MOVIMIENTO
-% function [Xx, Xy, Xz, xmx, xmy, xmz] = integrate(en, n, dt, Fx, Fy, Fz, Xx, Xy, Xz, xmx, xmy, xmz)
-%     sumVx = 0;
-%     sumVy = 0;
-%     sumVz = 0;
-% 
-%     sumVx2 = 0;
-%     sumVy2 = 0;
-%     sumVz2 = 0;
-% 
-%     for i = 1 :n 
-% 
-%         Xxx = 2*Xx(i) - xmx(i) + dt^2 * Fx(i);
-%         Xxy = 2*Xy(i) - xmy(i) + dt^2 * Fy(i);
-%         Xxz = 2*Xz(i) - xmz(i) + dt^2 * Fz(i);
-% 
-%         Vix = (Xxx-xmx(i))/(2*dt);
-%         Viy = (Xxy-xmy(i))/(2*dt);
-%         Viz = (Xxz-xmz(i))/(2*dt);
-% 
-%         sumVx = sumVx + Vix;
-%         sumVy = sumVy + Viy;
-%         sumVz = sumVz + Viz;
-% 
-%         sumVx2 = sumVx2 + Vix^2;
-%         sumVy2 = sumVy2 + Viy^2;
-%         sumVz2 = sumVz2 + Viz^2;
-% 
-%         xmx(i) = Xx(i);
-%         xmy(i) = Xy(i);
-%         xmz(i) = Xz(i);
-% 
-%         Xx(i) = Xxx;
-%         Xy(i) = Xxy;
-%         Xz(i) = Xxz;
-%     end 
-% 
-%     sumv2 = sumVx2^2 + sumVy2^2 + sumVz2^2;
-% 
-%     tempI = sumv2/(3*n);
-%     etot = (en + 0.5*sumv2)/n;
-% end 
-
-function [Xx, Xy, Xz, Vx, Vy, Vz, xmx, xmy, xmz] = integrate(n, dt, Fx, Fy, Fz, Vx, Vy, Vz, Xx, Xy, Xz, xmx, xmy, xmz)
+function [XxNew, XyNew, XzNew, VxNew, VyNew, VzNew, xmx, xmy, xmz] = integrate(n, dt, Fx, Fy, Fz, Vx, Vy, Vz, Xx, Xy, Xz, xmx, xmy, xmz)
     v2 = 0;
+
+    VxNew = zeros(n);
+    VyNew = zeros(n);
+    VzNew = zeros(n);
+
+    XxNew = zeros(n);
+    XyNew = zeros(n);
+    XzNew = zeros(n);
+
     for i = 1:n
         vxt = Vx(i);
         vyt = Vy(i);
         vzt = Vz(i);
 
-        Vx(i) = Vx(i) + dt*Fx(i);
-        Vy(i) = Vy(i) + dt*Fy(i);
-        Vz(i) = Vz(i) + dt*Fz(i);
+        VxNew(i) = Vx(i) + dt*Fx(i);
+        VyNew(i) = Vy(i) + dt*Fy(i);
+        VzNew(i) = Vz(i) + dt*Fz(i);
 
-        Xx(i) = Xx(i) + dt*Vx(i);
-        Xy(i) = Xy(i) + dt*Vy(i);
-        Xz(i) = Xz(i) + dt*Vz(i);
+        XxNew(i) = Xx(i) + dt*VxNew(i);
+        XyNew(i) = Xy(i) + dt*VyNew(i);
+        XzNew(i) = Xz(i) + dt*VzNew(i);
 
-        xmx(i) = Xx(i);
-        xmy(i) = Xy(i);
-        xmz(i) = Xz(i);
+        xmx(i) = XxNew(i);
+        xmy(i) = XyNew(i);
+        xmz(i) = XzNew(i);
 
         v2 = v2 + (Vx(i) + vxt)^(2/4) + (Vy(i) + vyt)^(2/4) + (Vz(i) + vzt)^(2/4);
     end
 end 
-
